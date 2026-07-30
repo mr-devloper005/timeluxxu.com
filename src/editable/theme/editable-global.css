@@ -12,11 +12,7 @@
   Do not add data fetching, scripts, or route logic here.
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
-
-/* Per-task display + body typefaces (consumed via task-themes.ts). */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap');
 
 body {
   background-color: var(--slot4-page-bg) !important;
@@ -25,11 +21,14 @@ body {
 }
 
 .editable-site-root {
-  /* Yelp-style clean sans, used for both display and body. */
-  --editable-font-display: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  --editable-font-body: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  /* Premium easing curve used across every hover + transition. */
+  --editable-font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --editable-font-body: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --editable-font-label: 'Hanken Grotesk', system-ui, sans-serif;
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  --editable-h0: clamp(4rem, 9vw, 6rem);
+  --editable-h1: clamp(3.25rem, 7vw, 5.5rem);
+  --editable-h2: clamp(2.5rem, 5vw, 3.375rem);
+  --editable-h3: clamp(1.75rem, 3vw, 2.5rem);
   font-family: var(--editable-font-body);
 }
 
@@ -75,6 +74,10 @@ body {
     transition-duration: 0.001ms !important;
     animation-duration: 0.001ms !important;
   }
+  .editable-reveal {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .editable-site-root h1,
@@ -83,7 +86,7 @@ body {
 .editable-site-root h4,
 .editable-display {
   font-family: var(--editable-font-display);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .editable-site-root p,
@@ -94,6 +97,39 @@ body {
 .editable-site-root label,
 .editable-site-root nav {
   font-family: var(--editable-font-body);
+}
+
+.editable-label {
+  font-family: var(--editable-font-label);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.editable-tinted-panel {
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--slot4-pastel-blue) 72%, white), transparent 58%),
+    var(--slot4-panel-bg);
+}
+
+.editable-hairline {
+  background-image: linear-gradient(to right, transparent, var(--editable-border), transparent);
+}
+
+.editable-reveal {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.55s var(--ease-premium), transform 0.55s var(--ease-premium);
+  will-change: opacity, transform;
+}
+
+.editable-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.editable-site-root :focus-visible {
+  outline: 2px solid var(--slot4-accent);
+  outline-offset: 4px;
 }
 
 ::selection {
