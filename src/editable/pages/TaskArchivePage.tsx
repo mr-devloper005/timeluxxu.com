@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowUpRight, BriefcaseBusiness, ChevronDown, Download, FileText, Globe, MapPin, Phone, Search, Star, UserRound } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, BriefcaseBusiness, ChevronDown, Download, FileText, Globe, MapPin, Phone, Search, Star, UserRound } from 'lucide-react'
 import { buildTaskMetadata } from '@/lib/seo'
 import { CATEGORY_OPTIONS, normalizeCategory } from '@/lib/categories'
 import { fetchPaginatedTaskPosts, buildPostUrl } from '@/lib/task-data'
@@ -63,6 +63,8 @@ const getField = (post: SitePost, keys: string[]) => {
   return ''
 }
 const cleanDomain = (value: string) => value.replace(/^https?:\/\//, '').replace(/\/$/, '')
+const displayTaskLabel = (task: TaskKey, fallback: string) => task === 'listing' ? 'Places' : task === 'pdf' ? 'Guides' : fallback
+const displayUnit = (task: TaskKey) => task === 'listing' ? 'places' : task === 'pdf' ? 'guides' : 'posts'
 
 function pageHref(basePath: string, category: string, page: number) {
   const params = new URLSearchParams()
@@ -107,7 +109,7 @@ export function TaskArchiveView({ task, posts, pagination, category, basePath }:
   const voice = taskPageVoices[task]
   const theme = getTaskTheme(task)
   const page = pagination.page || 1
-  const label = taskConfig?.label || task
+  const label = displayTaskLabel(task, taskConfig?.label || task)
   const categoryLabel = category === 'all' ? 'All categories' : CATEGORY_OPTIONS.find((item) => item.slug === category)?.name || category
 
   return (
@@ -135,7 +137,7 @@ export function TaskArchiveView({ task, posts, pagination, category, basePath }:
 
             <div className="mt-12 flex flex-col gap-4 border-t border-[var(--tk-line)] pt-6 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-[var(--tk-muted)]">
-                <span className="font-semibold text-[var(--tk-text)]">{posts.length}</span> {posts.length === 1 ? 'post' : 'posts'} · {categoryLabel}
+                <span className="font-semibold text-[var(--tk-text)]">{posts.length}</span> {posts.length === 1 ? displayUnit(task).replace(/s$/, '') : displayUnit(task)} · {categoryLabel}
               </p>
               <form action={basePath} className="flex items-center gap-2.5">
                 <div className="relative">
@@ -156,19 +158,27 @@ export function TaskArchiveView({ task, posts, pagination, category, basePath }:
           </div>
         </header>
 
-        <section className="mx-auto max-w-[var(--editable-container)] px-6 py-16 sm:py-20 lg:px-8">
-          {posts.length ? (
-            <div className={taskGrid[task]}>
-              {posts.map((post, index) => <ArchivePostCard key={post.id || post.slug} post={post} task={task} basePath={basePath} index={index} />)}
-            </div>
-          ) : (
-            <div className="mx-auto max-w-xl rounded-[var(--tk-radius)] border border-dashed border-[var(--tk-line)] bg-[var(--tk-surface)] px-8 py-16 text-center">
-              <Search className="mx-auto h-7 w-7 text-[var(--tk-muted)]" />
-              <h2 className="editable-display mt-5 text-2xl font-semibold tracking-[-0.02em]">Nothing here yet</h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--tk-muted)]">Try another category, or check back after new {label.toLowerCase()} are published.</p>
-            </div>
-          )}
+        {task === 'listing' && posts.length ? (
+          <ListingArchiveExperience posts={posts} basePath={basePath} />
+        ) : task === 'pdf' && posts.length ? (
+          <GuideArchiveExperience posts={posts} basePath={basePath} />
+        ) : (
+          <section className="mx-auto max-w-[var(--editable-container)] px-6 py-16 sm:py-20 lg:px-8">
+            {posts.length ? (
+              <div className={taskGrid[task]}>
+                {posts.map((post, index) => <ArchivePostCard key={post.id || post.slug} post={post} task={task} basePath={basePath} index={index} />)}
+              </div>
+            ) : (
+              <div className="mx-auto max-w-xl rounded-[var(--tk-radius)] border border-dashed border-[var(--tk-line)] bg-[var(--tk-surface)] px-8 py-16 text-center">
+                <Search className="mx-auto h-7 w-7 text-[var(--tk-muted)]" />
+                <h2 className="editable-display mt-5 text-2xl font-semibold tracking-[-0.02em]">Nothing here yet</h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--tk-muted)]">Try another category, or check back after new {label.toLowerCase()} are published.</p>
+              </div>
+            )}
+          </section>
+        )}
 
+        <section className="mx-auto max-w-[var(--editable-container)] px-6 pb-16 sm:pb-20 lg:px-8">
           {posts.length ? (
             <nav className="mt-16 flex items-center justify-center gap-3 text-sm">
               {pagination.hasPrevPage ? <Link href={pageHref(basePath, category, page - 1)} className="rounded-full border border-[var(--tk-line)] px-5 py-2.5 font-medium transition hover:border-[var(--tk-accent)]">Previous</Link> : null}
@@ -179,6 +189,113 @@ export function TaskArchiveView({ task, posts, pagination, category, basePath }:
         </section>
       </main>
     </EditableSiteShell>
+  )
+}
+
+function ListingArchiveExperience({ posts, basePath }: { posts: SitePost[]; basePath: string }) {
+  const [feature, ...rest] = posts
+  const categorySet = Array.from(new Set(posts.map((post) => getCategory(post, 'Place')).filter(Boolean))).slice(0, 6)
+  return (
+    <section className="mx-auto max-w-[var(--editable-container)] px-6 py-16 sm:py-20 lg:px-8">
+      <div className="grid gap-6 lg:grid-cols-[1fr_.72fr] lg:items-start">
+        <Link href={`${basePath}/${feature.slug}`} className="group block overflow-hidden rounded-[var(--tk-radius)] bg-[var(--tk-text)] text-white shadow-[0_30px_80px_rgba(40,47,72,0.18)]">
+          <div className="relative min-h-[560px] p-6 sm:p-8">
+            <img src={getImage(feature)} alt="" className="absolute inset-0 h-full w-full object-cover opacity-60 transition duration-700 group-hover:scale-[1.035]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(40,47,72,0.04),rgba(40,47,72,0.88))]" />
+            <div className="relative z-10 flex min-h-[500px] flex-col justify-between">
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-full bg-white px-4 py-2 text-[11px] font-bold uppercase tracking-[0.15em] text-[var(--tk-accent)]">Featured place</span>
+                <span className="rounded-full border border-white/30 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.15em] text-white/75">{getCategory(feature, 'Place')}</span>
+              </div>
+              <div>
+                <h2 className="editable-display max-w-4xl text-5xl font-medium leading-none sm:text-7xl">{feature.title}</h2>
+                <p className="mt-5 max-w-2xl text-base leading-8 text-white/76">{getSummary(feature)}</p>
+                <div className="mt-7 flex flex-wrap gap-3 text-sm font-semibold text-white/82">
+                  {getField(feature, ['location', 'address', 'city']) ? <span className="inline-flex items-center gap-2"><MapPin className="h-4 w-4 text-[var(--tk-accent)]" /> {getField(feature, ['location', 'address', 'city'])}</span> : null}
+                  {getField(feature, ['phone', 'telephone', 'mobile']) ? <span className="inline-flex items-center gap-2"><Phone className="h-4 w-4 text-[var(--tk-accent)]" /> {getField(feature, ['phone', 'telephone', 'mobile'])}</span> : null}
+                </div>
+              </div>
+            </div>
+          </div>
+        </Link>
+
+        <div>
+          <div className="rounded-[var(--tk-radius)] border border-[var(--tk-line)] bg-[var(--tk-surface)] p-6">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--tk-accent)]">Place categories</p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {categorySet.map((category) => <span key={category} className="rounded-full bg-[var(--tk-accent-soft)] px-3.5 py-2 text-xs font-bold text-[var(--tk-accent)]">{category}</span>)}
+            </div>
+          </div>
+          <div className="mt-5 divide-y divide-[var(--tk-line)] rounded-[var(--tk-radius)] border border-[var(--tk-line)] bg-[var(--tk-surface)] px-5">
+            {rest.slice(0, 10).map((post, index) => <ListingLedgerRow key={post.id || post.slug} post={post} href={`${basePath}/${post.slug}`} index={index} />)}
+          </div>
+        </div>
+      </div>
+      {rest.length > 10 ? (
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {rest.slice(10).map((post, index) => <ListingArchiveCard key={post.id || post.slug} post={post} href={`${basePath}/${post.slug}`} index={index + 10} />)}
+        </div>
+      ) : null}
+    </section>
+  )
+}
+
+function ListingLedgerRow({ post, href, index }: { post: SitePost; href: string; index: number }) {
+  const location = getField(post, ['location', 'address', 'city'])
+  return (
+    <Link href={href} className="group grid gap-4 py-5 sm:grid-cols-[48px_minmax(0,1fr)_auto] sm:items-start">
+      <span className="editable-display text-3xl leading-none text-[var(--tk-accent)]">{String(index + 1).padStart(2, '0')}</span>
+      <span className="min-w-0">
+        <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--tk-muted)]">{getCategory(post, 'Place')}</span>
+        <span className="editable-display mt-1 block text-2xl font-medium leading-none text-[var(--tk-text)]">{post.title}</span>
+        <span className="mt-2 block line-clamp-2 text-sm leading-6 text-[var(--tk-muted)]">{getSummary(post)}</span>
+        {location ? <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--tk-muted)]"><MapPin className="h-3.5 w-3.5 text-[var(--tk-accent)]" /> {location}</span> : null}
+      </span>
+      <ArrowRight className="mt-2 h-4 w-4 text-[var(--tk-accent)] transition group-hover:translate-x-1" />
+    </Link>
+  )
+}
+
+function GuideArchiveExperience({ posts, basePath }: { posts: SitePost[]; basePath: string }) {
+  return (
+    <section className="mx-auto max-w-[var(--editable-container)] px-6 py-16 sm:py-20 lg:px-8">
+      <div className="grid gap-5 lg:grid-cols-[.5fr_1fr]">
+        <div className="rounded-[var(--tk-radius)] bg-[var(--tk-accent)] p-7 text-white lg:sticky lg:top-28 lg:self-start">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/70">Guide shelf</p>
+          <h2 className="editable-display mt-4 text-5xl font-medium leading-none">Files arranged for scanning, not scrolling past photos.</h2>
+          <p className="mt-5 text-base leading-8 text-white/78">Each tile leads with identity, category, and action so visitors understand what they are opening.</p>
+        </div>
+        <div className="grid gap-4">
+          {posts.map((post, index) => <GuideShelfCard key={post.id || post.slug} post={post} href={`${basePath}/${post.slug}`} index={index} />)}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function GuideShelfCard({ post, href, index }: { post: SitePost; href: string; index: number }) {
+  const category = getCategory(post, 'Guide')
+  const size = getField(post, ['fileSize', 'size', 'filesize'])
+  const pages = getField(post, ['pages', 'pageCount'])
+  return (
+    <Link href={href} className="group grid gap-5 rounded-[var(--tk-radius)] border border-[var(--tk-line)] bg-[var(--tk-surface)] p-5 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_70px_rgba(40,47,72,0.12)] sm:grid-cols-[112px_minmax(0,1fr)_auto] sm:items-center">
+      <div className="flex aspect-square items-center justify-center rounded-[24px] bg-[var(--tk-raised)]">
+        <span className="editable-display text-5xl leading-none text-[var(--tk-accent)]">G</span>
+      </div>
+      <div className="min-w-0">
+        <div className="flex flex-wrap gap-2">
+          <span className="rounded-full bg-[var(--tk-accent-soft)] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--tk-accent)]">{category}</span>
+          {pages ? <span className="rounded-full border border-[var(--tk-line)] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--tk-muted)]">{pages} pages</span> : null}
+          {size ? <span className="rounded-full border border-[var(--tk-line)] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--tk-muted)]">{size}</span> : null}
+          <span className="rounded-full border border-[var(--tk-line)] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--tk-muted)]">#{String(index + 1).padStart(2, '0')}</span>
+        </div>
+        <h2 className="editable-display mt-3 text-3xl font-medium leading-none text-[var(--tk-text)]">{post.title}</h2>
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-[var(--tk-muted)]">{getSummary(post)}</p>
+      </div>
+      <span className="inline-flex items-center gap-2 text-sm font-bold text-[var(--tk-accent)]">
+        Open <Download className="h-4 w-4 transition group-hover:translate-y-0.5" />
+      </span>
+    </Link>
   )
 }
 
@@ -258,7 +375,7 @@ function ArticleArchiveCard({ post, href, index }: { post: SitePost; href: strin
   )
 }
 
-function ListingArchiveCard({ post, href }: { post: SitePost; href: string }) {
+function ListingArchiveCard({ post, href }: { post: SitePost; href: string; index?: number }) {
   const logo = getImages(post)[0]
   const location = getField(post, ['location', 'address', 'city'])
   const phone = getField(post, ['phone', 'telephone', 'mobile'])
@@ -338,7 +455,7 @@ function BookmarkArchiveCard({ post, href, index }: { post: SitePost; href: stri
 }
 
 function PdfArchiveCard({ post, href }: { post: SitePost; href: string }) {
-  const category = getCategory(post, 'Document')
+  const category = getCategory(post, 'Guide')
   return (
     <Link href={href} className={`${cardBase} flex flex-col p-6 sm:p-7`}>
       <div className="flex items-start justify-between gap-4">
@@ -348,7 +465,7 @@ function PdfArchiveCard({ post, href }: { post: SitePost; href: string }) {
       <h2 className="editable-display mt-6 text-xl font-semibold leading-snug tracking-[-0.02em]">{post.title}</h2>
       <RatingLine post={post} />
       <p className="mt-3 line-clamp-3 flex-1 text-sm leading-7 text-[var(--tk-muted)]">{getSummary(post)}</p>
-      <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--tk-accent)]">Open document <Download className="h-4 w-4" /></span>
+      <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--tk-accent)]">Open guide <Download className="h-4 w-4" /></span>
     </Link>
   )
 }
