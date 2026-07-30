@@ -1,76 +1,105 @@
 'use client'
 
-import { Building2, FileText, Image as ImageIcon, Mail, MapPin, Phone, Sparkles, Bookmark } from 'lucide-react'
+import { CheckCircle2, Clock3, FileText, Mail, MapPin, MessageCircle } from 'lucide-react'
 import { pagesContent } from '@/editable/content/pages.content'
-import { getFactoryState } from '@/design/factory/get-factory-state'
-import { getProductKind } from '@/design/factory/get-product-kind'
 import { EditableContactLeadForm } from '@/editable/components/EditableContactLeadForm'
+import { editableDesignContract as dc } from '@/editable/layouts/design-contract'
+import { EditableReveal } from '@/editable/shell/EditableReveal'
 import { EditableSiteShell } from '@/editable/shell/EditableSiteShell'
 
-const tone = {
-  shell: 'bg-[var(--slot4-page-bg)] text-[var(--slot4-page-text)]',
-  panel: 'border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)]',
-  soft: 'border border-[var(--editable-border)] bg-[var(--slot4-panel-bg)]',
-  muted: 'text-[var(--slot4-muted-text)]',
-  action: 'bg-[var(--slot4-accent-fill)] text-[var(--slot4-on-accent)] hover:opacity-90',
-}
+const lanes = [
+  {
+    icon: MapPin,
+    title: 'Place updates',
+    body: 'Send corrections, category changes, location details, or contact updates for a local record.',
+  },
+  {
+    icon: FileText,
+    title: 'Guide submissions',
+    body: 'Ask about reference material, upload standards, file context, and how guides are presented.',
+  },
+  {
+    icon: MessageCircle,
+    title: 'General support',
+    body: 'Reach us for account questions, publishing help, corrections, and partnership conversations.',
+  },
+]
 
-function getLanes(kind: ReturnType<typeof getProductKind>) {
-  if (kind === 'directory') {
-    return [
-      { icon: Building2, title: 'Business onboarding', body: 'Add listings, verify operational details, and bring your business surface live quickly.' },
-      { icon: Phone, title: 'Partnership support', body: 'Talk through bulk publishing, local growth, and operational setup questions.' },
-      { icon: MapPin, title: 'Coverage requests', body: 'Need a new geography or category lane? We can shape the directory around it.' },
-    ]
-  }
-  if (kind === 'editorial') {
-    return [
-      { icon: FileText, title: 'Editorial submissions', body: 'Pitch essays, columns, and long-form ideas that fit the publication.' },
-      { icon: Mail, title: 'Newsletter partnerships', body: 'Coordinate sponsorships, collaborations, and issue-level campaigns.' },
-      { icon: Sparkles, title: 'Contributor support', body: 'Get help with voice, formatting, and publication workflow questions.' },
-    ]
-  }
-  if (kind === 'visual') {
-    return [
-      { icon: ImageIcon, title: 'Creator collaborations', body: 'Discuss gallery launches, creator features, and visual campaigns.' },
-      { icon: Sparkles, title: 'Licensing and use', body: 'Reach out about usage rights, commercial requests, and visual partnerships.' },
-      { icon: Mail, title: 'Media kits', body: 'Request creator decks, editorial support, or visual feature placement.' },
-    ]
-  }
-  return [
-    { icon: Bookmark, title: 'Collection submissions', body: 'Suggest resources, boards, and links that deserve a place in the library.' },
-    { icon: Mail, title: 'Resource partnerships', body: 'Coordinate curation projects, reference pages, and link programs.' },
-    { icon: Sparkles, title: 'Curator support', body: 'Need help organizing shelves, collections, or profile-connected boards?' },
-  ]
-}
+const faqs = [
+  ['What should I include?', 'Share the page, record name, category, and the exact detail you want us to review.'],
+  ['How fast do you respond?', 'Most clear requests can be reviewed within a normal working window. Complex updates may take longer.'],
+  ['Can I send multiple updates?', 'Yes. Group related updates in one message so the team can review them together.'],
+]
 
 export default function ContactPage() {
-  const { recipe } = getFactoryState()
-  const productKind = getProductKind(recipe)
-  const lanes = getLanes(productKind)
-
   return (
-    <EditableSiteShell className={tone.shell}>
-      <main className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <section className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--slot4-accent)]">{pagesContent.contact.eyebrow}</p>
-            <h1 className="editable-display mt-4 text-5xl font-semibold tracking-[-0.02em]">{pagesContent.contact.title}</h1>
-            <p className={`mt-5 max-w-2xl text-sm leading-8 ${tone.muted}`}>{pagesContent.contact.description}</p>
-            <div className="mt-8 space-y-4">
-              {lanes.map((lane) => (
-                <div key={lane.title} className={`rounded-sm p-5 ${tone.soft}`}>
-                  <lane.icon className="h-5 w-5 text-[var(--slot4-accent)]" />
-                  <h2 className="editable-display mt-3 text-xl font-semibold">{lane.title}</h2>
-                  <p className={`mt-2 text-sm leading-7 ${tone.muted}`}>{lane.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+    <EditableSiteShell>
+      <main className="bg-[var(--slot4-page-bg)] text-[var(--slot4-page-text)]">
+        <section className={`${dc.shell.section} py-20 sm:py-24 lg:py-28`}>
+          <div className="grid gap-10 lg:grid-cols-[.8fr_1fr] lg:items-start">
+            <EditableReveal>
+              <div className="lg:sticky lg:top-28">
+                <p className={dc.type.eyebrow}>{pagesContent.contact.eyebrow}</p>
+                <h1 className={`${dc.type.heroTitle} mt-5 max-w-3xl text-balance`}>{pagesContent.contact.title}</h1>
+                <p className={`${dc.type.body} mt-6 max-w-xl`}>{pagesContent.contact.description}</p>
 
-          <div className={`rounded-sm p-7 ${tone.panel}`}>
-            <h2 className="editable-display text-2xl font-semibold">{pagesContent.contact.formTitle}</h2>
-            <EditableContactLeadForm />
+                <div className="mt-8 grid gap-3">
+                  <div className="rounded-[28px] border border-[var(--editable-border)] bg-white p-5">
+                    <Clock3 className="h-5 w-5 text-[var(--slot4-accent)]" />
+                    <h2 className="editable-display mt-4 text-3xl font-medium leading-none">Response rhythm</h2>
+                    <p className="mt-3 text-sm leading-6 text-[var(--slot4-muted-text)]">
+                      Clear, specific requests move fastest: include the page, the correction, and any source details.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </EditableReveal>
+
+            <div className="grid gap-6">
+              <EditableReveal index={1}>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {lanes.map((lane) => (
+                    <article key={lane.title} className="rounded-[28px] border border-[var(--editable-border)] bg-white p-5">
+                      <lane.icon className="h-5 w-5 text-[var(--slot4-accent)]" />
+                      <h2 className="editable-display mt-5 text-2xl font-medium leading-none">{lane.title}</h2>
+                      <p className="mt-3 text-sm leading-6 text-[var(--slot4-muted-text)]">{lane.body}</p>
+                    </article>
+                  ))}
+                </div>
+              </EditableReveal>
+
+              <EditableReveal index={2}>
+                <div className="rounded-[28px] border border-[var(--editable-border)] bg-white p-6 sm:p-8">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--slot4-accent-soft)] text-[var(--slot4-accent)]">
+                      <Mail className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <p className={dc.type.eyebrow}>{pagesContent.contact.formTitle}</p>
+                      <h2 className="editable-display mt-1 text-3xl font-medium leading-none">Route your note to the right desk.</h2>
+                    </div>
+                  </div>
+                  <EditableContactLeadForm />
+                </div>
+              </EditableReveal>
+
+              <EditableReveal index={3}>
+                <div className="rounded-[28px] bg-[var(--slot4-pastel-blue)] p-6 sm:p-8">
+                  <p className={dc.type.eyebrow}>Before you send</p>
+                  <div className="mt-5 grid gap-4">
+                    {faqs.map(([question, answer]) => (
+                      <div key={question} className="grid gap-3 sm:grid-cols-[28px_minmax(0,1fr)]">
+                        <CheckCircle2 className="mt-1 h-5 w-5 text-[var(--slot4-accent)]" />
+                        <div>
+                          <h3 className="font-extrabold">{question}</h3>
+                          <p className="mt-1 text-sm leading-6 text-[var(--slot4-muted-text)]">{answer}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </EditableReveal>
+            </div>
           </div>
         </section>
       </main>

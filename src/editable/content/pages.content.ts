@@ -3,19 +3,19 @@ import { slot4BrandConfig } from '@/editable/theme/brand.config'
 export const pagesContent = {
   home: {
     metadata: {
-      title: 'Stories, visuals, and discoverable content',
-      description: 'Explore articles, images, listings, and curated posts through a cleaner reading-first experience.',
-      openGraphTitle: 'Stories, visuals, and discoverable content',
-      openGraphDescription: 'Discover articles, visual posts, and connected content through a calmer reading-first experience.',
-      keywords: ['story platform', 'article site', 'visual content', 'content discovery'],
+      title: 'Places and Guides for local discovery',
+      description: 'Search local places and downloadable guides through a calm, useful directory experience.',
+      openGraphTitle: 'Places and Guides for local discovery',
+      openGraphDescription: 'Find local records, compare practical details, and open helpful guides from one searchable index.',
+      keywords: ['places directory', 'guide library', 'local discovery', 'reference guides'],
     },
     hero: {
-      badge: 'Latest stories and visuals',
-      title: ['A thoughtful home for', 'stories, visuals, and discovery.'],
-      description: 'Explore fresh articles, image-led posts, and discoverable content across the platform through a calmer and clearer browsing experience.',
-      primaryCta: { label: 'Read latest stories', href: '/article' },
-      secondaryCta: { label: 'Explore visuals', href: '/image' },
-      searchPlaceholder: 'Search stories, visuals, listings, and more',
+      badge: 'Places and Guides',
+      title: ['A calm index for', 'local records and useful references.'],
+      description: 'Find practical local details, compare records, and open saved reference material from one focused search surface.',
+      primaryCta: { label: 'Browse Places', href: '/listing' },
+      secondaryCta: { label: 'Open Guides', href: '/pdf' },
+      searchPlaceholder: 'Search places, categories, guide topics',
       focusLabel: 'Focus',
       featureCardBadge: 'latest cover rotation',
       featureCardTitle: 'Latest posts shape the visual identity of the homepage.',
@@ -41,8 +41,8 @@ export const pagesContent = {
     },
     cta: {
       badge: 'Start exploring',
-      title: 'Explore articles, visuals, and resources through one connected experience.',
-      description: 'Move between articles, image-led posts, listings, and resources through one clearer and more connected visual system.',
+      title: 'Explore local records and reference material through one connected experience.',
+      description: 'Move between places, articles, profiles, images, bookmarks, and guides through one clearer visual system.',
       primaryCta: { label: 'Browse Articles', href: '/article' },
       secondaryCta: { label: 'Contact Sales', href: '/contact' },
     },
@@ -52,12 +52,12 @@ export const pagesContent = {
     },
   },
   about: {
-    badge: 'Our Story',
-    title: 'A calmer, clearer way to explore content.',
-    description: `${slot4BrandConfig.siteName} is built to make long-form reading, visual discovery, and supporting resources feel like one unified experience.`,
+    badge: 'About the index',
+    title: 'A calmer, clearer way to find local records and useful guides.',
+    description: `${slot4BrandConfig.siteName} helps visitors search practical local records, compare useful details, and open reference material from one connected index.`,
     paragraphs: [
-      'Instead of splitting everything into disconnected pages, the platform keeps related content easy to move through and easy to understand.',
-      'Whether someone starts with an article, listing, image post, or resource page, they can continue exploring without losing context.',
+      'Instead of splitting useful information into disconnected pages, the platform keeps related records, articles, images, profiles, bookmarks, and guides close together.',
+      'Whether someone starts with a local record or a guide, they can continue exploring without losing context.',
     ],
     values: [
       {
@@ -76,8 +76,8 @@ export const pagesContent = {
   },
   contact: {
     eyebrow: `Contact ${slot4BrandConfig.siteName}`,
-    title: 'A support page that matches the product, not a generic contact form.',
-    description: 'Tell us what you are trying to publish, fix, or launch. We will route it through the right lane instead of forcing every request into the same support bucket.',
+    title: 'Send corrections, submissions, and support notes to the right desk.',
+    description: 'Tell us what you want to add, fix, clarify, or publish. Specific page names, categories, and source details help us respond with less back-and-forth.',
     formTitle: 'Send a message',
   },
 
@@ -115,21 +115,21 @@ export const pagesContent = {
   },
   auth: {
     login: {
-      metadataDescription: 'Login page for this site.',
+      metadataDescription: 'Sign in to submit places, publish guides, and manage local site access.',
       badge: 'Member access',
-      title: 'Welcome back to your publishing space.',
-      description: 'Login to continue browsing, managing submissions, and creating new content from your account.',
-      formTitle: 'Login',
+      title: 'Welcome back to your publishing desk.',
+      description: 'Sign in to submit records, publish reference guides, and continue from the same account on this browser.',
+      formTitle: 'Sign in',
       submitLabel: 'Continue',
       noAccount: 'No account matched these details. Create an account first, then login.',
       success: 'Login successful. Redirecting...',
       createCta: 'Create an account',
     },
     signup: {
-      metadataDescription: 'Signup page for this site.',
+      metadataDescription: 'Create an account to submit local records, publish guides, and save useful finds.',
       badge: 'Site access',
-      title: 'Create your account and start publishing.',
-      description: 'Create an account to access the publishing workspace, save details, and submit content through the site.',
+      title: 'Create your account and start contributing.',
+      description: 'Create an account to submit places, publish guides, save useful finds, and return to the publishing workspace.',
       formTitle: 'Create account',
       submitLabel: 'Create account',
       passwordShort: 'Use at least 4 characters for the password.',
@@ -143,8 +143,8 @@ export const pagesContent = {
       fallbackTitle: 'Article details',
     },
     listing: {
-      relatedTitle: 'Related listings',
-      fallbackTitle: 'Listing details',
+      relatedTitle: 'Related places',
+      fallbackTitle: 'Place details',
     },
     image: {
       relatedTitle: 'Related visuals',
